@@ -1,3 +1,31 @@
+<!-- DEBUG: show JS errors on page -->
+<script>
+  window.__showError = msg => {
+    document.body.innerHTML = `
+      <div style="padding:20px; font-family:monospace; background:#fff; color:#000;">
+        <h2 style="color:#b91c1c;">DEBUG — JavaScript Error</h2>
+        <pre style="white-space:pre-wrap;">${String(msg)}</pre>
+        <p style="opacity:.8;">(Remove this debug block once fixed)</p>
+      </div>`;
+  };
+
+  window.onerror = function(message, source, lineno, colno, error) {
+    const text = message + "\n\nsource: " + source + ":" + lineno + ":" + colno + "\n\n" + (error && error.stack ? error.stack : '');
+    window.__showError(text);
+    return true; // prevent further console noise
+  };
+
+  window.addEventListener('unhandledrejection', ev => {
+    const reason = ev.reason && ev.reason.stack ? ev.reason.stack : JSON.stringify(ev.reason);
+    window.__showError('Unhandled promise rejection:\\n' + reason);
+  });
+</script>
+
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -299,3 +327,4 @@
 </script>
 </body>
 </html>
+
